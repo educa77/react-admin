@@ -6,7 +6,7 @@ import UserIcon from "@material-ui/icons/Group";
 import jsonServerProvider from "ra-data-json-server";
 import { UserList } from "./users";
 import { PostList, PostEdit, PostCreate } from "./posts";
-import { CategoriesList } from "./categories";
+import { CategoriesList, CategoryEdit, CategoryCreate } from "./categories";
 import Dashboard from "./Dashboard";
 import authProvider from "./authProvider";
 import dataProvider from "./dataProvider";
@@ -31,7 +31,12 @@ const App = () => {
       create={PostCreate}
       icon={PostIcon}
     /> */}
-      <Resource name="categories" list={CategoriesList} />
+      <Resource
+        name="categories"
+        list={CategoriesList}
+        edit={CategoryEdit}
+        create={CategoryCreate}
+      />
     </Admin>
   );
 };

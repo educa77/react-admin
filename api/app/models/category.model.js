@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       expanded: {
         type: DataTypes.BOOLEAN,
       },
+      category_id: {
+        type: DataTypes.BIGINT,
+      },
       createdAt: {
         type: DataTypes.DATE,
       },

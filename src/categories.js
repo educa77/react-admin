@@ -18,7 +18,7 @@ import {
   useListContext,
 } from "react-admin";
 
-const PostTitle = ({ record }) => {
+const CategoryTitle = ({ record }) => {
   return <span>Post {record ? `"${record.title}"` : ""}</span>;
 };
 
@@ -41,8 +41,8 @@ export const CategoriesList = (props) => {
       <Datagrid /* rowClick="edit" */>
         <TextField source="id" />
         <TextField source="title" />
-        <TextField source="order" />
-        <TextField source="expanded" />
+        {/*  <TextField source="order" />
+        <TextField source="expanded" /> */}
         <ReferenceField source="category_id" reference="categories">
           <TextField source="title" />
         </ReferenceField>
@@ -52,30 +52,30 @@ export const CategoriesList = (props) => {
   );
 };
 
-export const PostEdit = (props) => (
-  <Edit title={<PostTitle />} {...props}>
+export const CategoryEdit = (props) => (
+  <Edit title={<CategoryTitle />} {...props}>
     <SimpleForm>
       <TextInput disabled source="id" />
-      <ReferenceInput source="userId" reference="users">
-        {/* <SelectInput optionText="id" /> */}
-        <SelectInput optionText="name" />
-      </ReferenceInput>
-      {/* <TextInput source="id" /> */}
       <TextInput source="title" />
-      {/* <TextInput source="body" /> */}
-      <TextInput multiline source="body" />
+      <TextField source="order" />
+      <TextField source="expanded" />
+      <ReferenceInput source="category_id" reference="categories">
+        <SelectInput optionText="title" />
+      </ReferenceInput>
     </SimpleForm>
   </Edit>
 );
 
-export const PostCreate = (props) => (
+export const CategoryCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <ReferenceInput source="userId" reference="users">
-        <SelectInput optionText="name" />
-      </ReferenceInput>
+      <TextInput disabled source="id" />
       <TextInput source="title" />
-      <TextInput multiline source="body" />
+      <TextField source="order" />
+      <TextField source="expanded" />
+      <ReferenceInput source="category_id" reference="categories">
+        <SelectInput optionText="title" />
+      </ReferenceInput>
     </SimpleForm>
   </Create>
 );

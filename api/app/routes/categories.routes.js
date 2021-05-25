@@ -22,7 +22,7 @@ module.exports = (app) => {
   router.delete("/:id", categories.delete);
 
   // Delete all categories
-  router.delete("/", categories.deleteAll);
+  //router.delete("/", categories.deleteAll);
 
   app.use("/api/categories", router);
 };

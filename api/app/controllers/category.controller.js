@@ -6,6 +6,7 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.title && !req.body.id) {
+    console.log("entro aca???");
     res.status(400).send({
       message: "Content can not be empty!",
     });
@@ -18,7 +19,10 @@ exports.create = (req, res) => {
     title: req.body.title,
     order: req.body.order,
     expanded: req.body.expanded,
+    category_id: req.body.category_id,
   };
+
+  console.log(category, "category");
 
   // Save Tutorial in the database
   Category.create(category)
@@ -70,6 +74,7 @@ exports.findAll = (req, res) => {
 
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
+  console.log("entro a findOne");
   const id = req.params.id;
 
   Category.findByPk(id)
@@ -91,7 +96,8 @@ exports.update = (req, res) => {
     where: { id: id },
   })
     .then((num) => {
-      if (num == 1) {
+      console.log(num, "num de update");
+      if (num[0] === 1) {
         res.send({
           message: "Category was updated successfully.",
         });
@@ -111,24 +117,24 @@ exports.update = (req, res) => {
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-
+  console.log(id, "id del controller");
   Category.destroy({
     where: { id: id },
   })
     .then((num) => {
-      if (num == 1) {
+      if (num === 1) {
         res.send({
           message: "Category was deleted successfully!",
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Category was not found!`,
+          message: `Cannot delete Category with id=${id}. Maybe Category was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Tutorial with id=" + id,
+        message: "Could not delete Category with id=" + id,
       });
     });
 };
