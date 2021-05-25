@@ -22,23 +22,14 @@ const CategoryTitle = ({ record }) => {
   return <span>Post {record ? `"${record.title}"` : ""}</span>;
 };
 
-const PostFilter = (props) => (
-  <Filter {...props}>
-    <TextInput label="Search" source="q" alwaysOn />
-    <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
-      <SelectInput optionText="name" />
-    </ReferenceInput>
-  </Filter>
-);
-
 export const CategoriesList = (props) => {
   return (
     <List
       {...props}
-      filters={<PostFilter />}
+
       /* pagination={<CategoryPagination />} */
     >
-      <Datagrid /* rowClick="edit" */>
+      <Datagrid>
         <TextField source="id" />
         <TextField source="title" />
         {/*  <TextField source="order" />

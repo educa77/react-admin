@@ -3,7 +3,7 @@ module.exports = (app) => {
 
   var router = require("express").Router();
 
-  // Create a new Tutorial
+  // Create a new Categories
   router.post("/", categories.create);
 
   // Retrieve all categories
@@ -12,17 +12,17 @@ module.exports = (app) => {
   // Retrieve all published categories
   router.get("/node", categories.findAllFirstLevel);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve a single Categories with id
   router.get("/:id", categories.findOne);
 
-  // Update a Tutorial with id
+  // Update a Categories with id
   router.put("/:id", categories.update);
 
-  // Delete a Tutorial with id
+  // Delete a Categories with id
   router.delete("/:id", categories.delete);
 
   // Delete all categories
-  //router.delete("/", categories.deleteAll);
+  router.delete("/", categories.deleteAll);
 
   app.use("/api/categories", router);
 };

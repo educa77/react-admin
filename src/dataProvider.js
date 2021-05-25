@@ -7,6 +7,7 @@ const httpClient = fetchUtils.fetchJson;
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getList: async (resource, params) => {
+    console.log("entro a list");
     if (resource === "categories") {
       let { page: pagina, perPage: size } = params.pagination;
       pagina = pagina - 1;
@@ -178,14 +179,6 @@ export default {
           return json ? { data: json } : { data: [id] };
         });
       });
-      /*       const { json } = await httpClient(`${apiUrl}/${resource}`);
-      let categories = json.categories;
-      const filtrados = categories.filter(function (el) {
-        return params.ids.indexOf(el.id) < 0;
-      });
-      return {
-        data: filtrados,
-      }; */
     } else {
       const query = {
         filter: JSON.stringify({ id: params.ids }),
