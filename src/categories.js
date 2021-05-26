@@ -16,17 +16,32 @@ import {
   Filter,
   Pagination,
   useListContext,
+  ListButton,
+  TopToolbar,
+  ShowButton,
+  CreateButton,
+  FilterButton,
+  ExportButton,
 } from "react-admin";
 
 const CategoryTitle = ({ record }) => {
   return <span>Post {record ? `"${record.title}"` : ""}</span>;
 };
 
+const CategoryEditActions = ({ basePath, record, resource }) => (
+  <TopToolbar>
+    <ListButton basePath="/tree" label="Tree" />
+    <ShowButton basePath={basePath} record={record} />
+    <CreateButton basePath={basePath} />
+    <ExportButton />
+  </TopToolbar>
+);
+
 export const CategoriesList = (props) => {
   return (
     <List
       {...props}
-
+      actions={<CategoryEditActions />}
       /* pagination={<CategoryPagination />} */
     >
       <Datagrid>

@@ -1,0 +1,9 @@
+.circular {
+  display: none;
+  color: #000;
+}
+
+.circular-spinner {
+  background: #f7931d;
+  color: #000;
+}
