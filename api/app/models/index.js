@@ -20,5 +20,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.categories = require("./category.model.js")(sequelize, Sequelize);
+db.posts = require("./post.model.js")(sequelize, Sequelize);
 
 module.exports = db;

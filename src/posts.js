@@ -14,8 +14,23 @@ import {
   SelectInput,
   TextInput,
   Filter,
+  ListButton,
+  TopToolbar,
+  ShowButton,
+  CreateButton,
+  FilterButton,
+  ExportButton,
 } from "react-admin";
 import { useMediaQuery } from "@material-ui/core";
+
+const PostEditActions = ({ basePath, record, resource }) => (
+  <TopToolbar>
+    <ListButton basePath="/tree" label="Tree" />
+    <ShowButton basePath={basePath} record={record} />
+    <CreateButton basePath={basePath} />
+    <ExportButton />
+  </TopToolbar>
+);
 
 const PostTitle = ({ record }) => {
   return <span>Post {record ? `"${record.title}"` : ""}</span>;
@@ -31,16 +46,13 @@ const PostFilter = (props) => (
 );
 
 export const PostList = (props) => (
-  <List {...props} filters={<PostFilter />}>
+  <List {...props} filters={<PostFilter />} actions={<PostEditActions />}>
     <Datagrid /* rowClick="edit" */>
       <TextField source="id" />
-      <ReferenceField source="userId" reference="users">
-        {/* <TextField source="id" /> */}
-        <TextField source="name" />
-      </ReferenceField>
-      {/* <TextField source="id" /> */}
       <TextField source="title" />
-      {/* <TextField source="body" /> */}
+      <ReferenceField source="post_id" reference="posts">
+        <TextField source="title" />
+      </ReferenceField>
       <EditButton />
     </Datagrid>
   </List>
@@ -49,15 +61,10 @@ export const PostList = (props) => (
 export const PostEdit = (props) => (
   <Edit title={<PostTitle />} {...props}>
     <SimpleForm>
-      <TextInput disabled source="id" />
-      <ReferenceInput source="userId" reference="users">
-        {/* <SelectInput optionText="id" /> */}
-        <SelectInput optionText="name" />
-      </ReferenceInput>
-      {/* <TextInput source="id" /> */}
       <TextInput source="title" />
-      {/* <TextInput source="body" /> */}
-      <TextInput multiline source="body" />
+      <ReferenceInput source="post_id" reference="posts">
+        <SelectInput optionText="title" />
+      </ReferenceInput>
     </SimpleForm>
   </Edit>
 );
@@ -65,11 +72,10 @@ export const PostEdit = (props) => (
 export const PostCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <ReferenceInput source="userId" reference="users">
-        <SelectInput optionText="name" />
+      <TextInput multiline source="title" />
+      <ReferenceInput source="post_id" reference="posts">
+        <SelectInput optionText="title" />
       </ReferenceInput>
-      <TextInput source="title" />
-      <TextInput multiline source="body" />
     </SimpleForm>
   </Create>
 );

@@ -13,8 +13,22 @@ export default {
       pagina = pagina - 1;
       const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
       const { headers, json } = await httpClient(url);
+      console.log(json, "json");
       return {
         data: json.categories,
+        total: headers.get("content-range")
+          ? parseInt(headers.get("content-range").split("/").pop(), 10)
+          : json.totalItems,
+      };
+    }
+    if (resource === "posts") {
+      let { page: pagina, perPage: size } = params.pagination;
+      pagina = pagina - 1;
+      const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
+      const { headers, json } = await httpClient(url);
+      console.log(json, "json");
+      return {
+        data: json?.posts ? json.posts : [],
         total: headers.get("content-range")
           ? parseInt(headers.get("content-range").split("/").pop(), 10)
           : json.totalItems,
@@ -29,10 +43,14 @@ export default {
       };
       const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
+      console.log(url, "url");
+
       const { headers, json } = await httpClient(url);
       return {
-        data: json,
-        total: parseInt(headers.get("content-range").split("/").pop(), 10),
+        data: json.posts,
+        total: headers.get("content-range")
+          ? parseInt(headers.get("content-range").split("/").pop(), 10)
+          : json.totalItems,
       };
     }
   },
@@ -45,6 +63,14 @@ export default {
   getMany: async (resource, params) => {
     console.log("entro a getmany");
     if (resource === "categories") {
+      const id = params.ids[0];
+      const url = `${apiUrl}/${resource}/${id}`;
+      const { json } = await httpClient(url);
+      let dataArr = [];
+      dataArr.push(json);
+      return { data: dataArr };
+    }
+    if (resource === "posts") {
       const id = params.ids[0];
       const url = `${apiUrl}/${resource}/${id}`;
       const { json } = await httpClient(url);
@@ -82,7 +108,7 @@ export default {
   update: (resource, params) => {
     console.log("entro a update");
     console.log(params, "params");
-    if (resource === "categories") {
+    if (resource === "categories" || resource === "posts") {
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PUT",
         body: JSON.stringify(params.data),
@@ -138,6 +164,33 @@ export default {
           console.log(error, "error");
         }
       );
+    }
+    if (resource === "posts") {
+      const dataCreate = {
+        ...params.data,
+        id: new Date().getTime(),
+        post_id: params.data.post_id ? params.data.post_id : null,
+      };
+
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: JSON.stringify(dataCreate),
+      }).then(
+        ({ json }) => {
+          console.log(json, "json del then");
+          const data = {
+            data: {
+              ...params.data,
+              id: json.id,
+              post_id: json.post_id,
+            },
+          };
+          return data;
+        },
+        (error) => {
+          console.log(error, "error");
+        }
+      );
     } else {
       return httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
@@ -150,7 +203,7 @@ export default {
 
   delete: (resource, params) => {
     console.log("entro a delete");
-    if (resource === "categories") {
+    if (resource === "categories" || resource === "posts") {
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "DELETE",
       }).then(({ json }) => {
@@ -164,7 +217,7 @@ export default {
   },
 
   deleteMany: async (resource, params) => {
-    if (resource === "categories") {
+    if (resource === "categories" || resource === "posts") {
       params.ids.forEach((id) => {
         if (params.ids.indexOf(id) === params.ids.length - 1) {
           return httpClient(`${apiUrl}/${resource}/${id}`, {

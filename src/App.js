@@ -10,6 +10,7 @@ import { CategoriesList, CategoryEdit, CategoryCreate } from "./categories";
 import Dashboard from "./Dashboard";
 import authProvider from "./authProvider";
 import dataProvider from "./dataProvider";
+import customRoutes from "./customRoutes";
 
 // const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
       dashboard={Dashboard}
       dataProvider={dataProvider}
       authProvider={authProvider}
+      customRoutes={customRoutes}
     >
       {/*     <Resource
       name="users"
@@ -36,6 +38,13 @@ const App = () => {
         list={CategoriesList}
         edit={CategoryEdit}
         create={CategoryCreate}
+      />
+      <Resource
+        name="posts"
+        list={PostList}
+        edit={PostEdit}
+        create={PostCreate}
+        icon={PostIcon}
       />
     </Admin>
   );
