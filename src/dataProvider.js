@@ -1,5 +1,6 @@
 import { fetchUtils } from "react-admin";
 import { stringify } from "query-string";
+import axios from "axios";
 
 const apiUrl = "http://localhost:8080/api";
 const httpClient = fetchUtils.fetchJson;
@@ -8,17 +9,18 @@ const httpClient = fetchUtils.fetchJson;
 export default {
   getList: async (resource, params) => {
     console.log("entro a list");
+    const { token } = JSON.parse(localStorage.getItem("auth"));
+    console.log(token, "token");
     if (resource === "categories") {
       let { page: pagina, perPage: size } = params.pagination;
       pagina = pagina - 1;
       const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
-      const { headers, json } = await httpClient(url);
-      console.log(json, "json");
+      const data = await axios.get(url, {
+        headers: { "x-access-token": token },
+      });
       return {
-        data: json.categories,
-        total: headers.get("content-range")
-          ? parseInt(headers.get("content-range").split("/").pop(), 10)
-          : json.totalItems,
+        data: data.data.categories,
+        total: data.data.totalItems,
       };
     }
     if (resource === "posts") {
@@ -36,6 +38,7 @@ export default {
     } else {
       const { page, perPage } = params.pagination;
       const { field, order } = params.sort;
+      console.log("estoy aca??????");
       const query = {
         sort: JSON.stringify([field, order]),
         range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),

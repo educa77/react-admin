@@ -1,5 +1,6 @@
 module.exports = (app) => {
   const categories = require("../controllers/category.controller");
+  const jwt = require("../middlewares/JWTVerifier");
 
   var router = require("express").Router();
 
@@ -7,7 +8,7 @@ module.exports = (app) => {
   router.post("/", categories.create);
 
   // Retrieve all categories
-  router.get("/", categories.findAll);
+  router.get("/", jwt, categories.findAll);
 
   // Retrieve all published categories
   router.get("/node", categories.findAllFirstLevel);

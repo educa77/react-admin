@@ -52,6 +52,7 @@ const getPagingData = (data, page, limit) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
+  console.log(req.headers, "req.headers de findAll de categories");
   const { page, size, title } = req.query;
   var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
 
@@ -72,6 +73,7 @@ exports.findAll = (req, res) => {
     Category.findAndCountAll({ where: condition, limit, offset })
       .then((data) => {
         const response = getPagingData(data, page, limit);
+
         res.send(response);
       })
       .catch((err) => {

@@ -14,18 +14,14 @@ import {
   SelectInput,
   TextInput,
   Filter,
-  ListButton,
   TopToolbar,
   ShowButton,
   CreateButton,
-  FilterButton,
   ExportButton,
 } from "react-admin";
-import { useMediaQuery } from "@material-ui/core";
 
 const PostEditActions = ({ basePath, record, resource }) => (
   <TopToolbar>
-    <ListButton basePath="/tree" label="Tree" />
     <ShowButton basePath={basePath} record={record} />
     <CreateButton basePath={basePath} />
     <ExportButton />

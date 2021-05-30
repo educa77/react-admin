@@ -2,16 +2,25 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ exposedHeaders: ["Content-Range"] }));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.header("x-access-token");
+  next();
+});
 
 // conectamos con la base de datos y sincronizamos con los modelos
 const db = require("./app/models");
@@ -26,6 +35,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/categories.routes")(app);
 require("./app/routes/post.routes")(app);
+require("./app/routes/auth.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

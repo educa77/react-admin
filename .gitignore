@@ -7,6 +7,7 @@ api/node_modules
 .pnp.js
 .env
 api/.env
+api/app/localstorage
 
 # testing
 /coverage
