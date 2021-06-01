@@ -10,7 +10,6 @@ export default {
   getList: async (resource, params) => {
     console.log("entro a list");
     const { token } = JSON.parse(localStorage.getItem("auth"));
-    console.log(token, "token");
     if (resource === "categories") {
       let { page: pagina, perPage: size } = params.pagination;
       pagina = pagina - 1;

@@ -43,12 +43,8 @@ const App = () => {
       customRoutes={customRoutes}
       loginPage={login}
     >
-      {/*     <Resource
-      name="users"
-      list={UserList}
-      icon={UserIcon}
-    />
-    <Resource
+      <Resource name="users" list={UserList} icon={UserIcon} />
+      {/* <Resource
       name="posts"
       list={PostList}
       edit={PostEdit}

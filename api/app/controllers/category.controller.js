@@ -53,6 +53,9 @@ const getPagingData = (data, page, limit) => {
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
   console.log(req.headers, "req.headers de findAll de categories");
+  const tree = req.headers["data-tree"];
+  console.log(tree, "tree");
+
   const { page, size, title } = req.query;
   var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
 
@@ -69,8 +72,11 @@ exports.findAll = (req, res) => {
       });
   } else {
     const { limit, offset } = getPagination(page, size);
-
-    Category.findAndCountAll({ where: condition, limit, offset })
+    Category.findAndCountAll(
+      tree
+        ? { where: { parent_id: null }, limit, offset }
+        : { where: condition, limit, offset }
+    )
       .then((data) => {
         const response = getPagingData(data, page, limit);
 

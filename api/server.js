@@ -19,6 +19,7 @@ app.use(cookieParser());
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.header("x-access-token");
+  res.header("data-tree");
   next();
 });
 

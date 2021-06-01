@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
@@ -47,10 +48,8 @@ const useStyles = makeStyles((theme) => ({
 
 const apiUrl = "http://localhost:8080/api";
 
-function tree(props) {
-  // console.log(props, "props");
+function tree() {
   const [controlledCategories, setControlledCategories] = useState([]);
-  const [board, setBoard] = useState([]);
   const [boardTwo, setBoardTwo] = useState([]);
 
   const history = useHistory();
@@ -63,16 +62,63 @@ function tree(props) {
   const btn = document.querySelector("#btnsave");
   const divCircular = document.querySelector(".circular");
 
+  const mapCategories = (controlledCategories) => {
+    let categories = controlledCategories;
+    if (controlledCategories.length) {
+      for (const category of controlledCategories) {
+        category.children = [
+          ...categories.filter((e) => e.category_id === category.id),
+        ]
+          ? [...categories.filter((e) => e.category_id === category.id)]
+          : [];
+        mapCategories(category.children);
+      }
+    }
+    controlledCategories = controlledCategories.filter(
+      (e) => e.category_id === null
+    );
+    controlledCategories = sortCategories(controlledCategories);
+    return controlledCategories;
+  };
+
+  const sortCategories = (categories) => {
+    if (categories.length) {
+      categories.sort(function (a, b) {
+        return a.order - b.order;
+      });
+      for (const category of categories) {
+        sortCategories(category.children);
+      }
+    }
+    return categories;
+  };
+
+  const resetCategories = (categories) => {
+    const controlledCategories = categories;
+    if (Array.isArray(categories)) {
+      for (const category of categories) {
+        controlledCategories.find(
+          (element) => element.id === category.category_id
+        ) === undefined
+          ? (category.category_id = null)
+          : "";
+      }
+    }
+    return categories;
+  };
+
   const dataFetch = async () => {
+    const { token } = JSON.parse(localStorage.getItem("auth"));
     const url = `${apiUrl}/categories`;
-    const data = await axios.get(url);
-    console.log(data, "data");
-    setControlledCategories(data.data.rows);
+    const data = await axios.get(url, {
+      headers: { "x-access-token": token },
+    });
+    let categoriesData = resetCategories(data.data.rows);
+    const finalData = mapCategories(categoriesData);
+    setControlledCategories(categoriesData);
+    setBoardTwo(finalData);
     //setControlledCategories(dataFake);
   };
-  console.log(controlledCategories, "controlledCategories");
-  console.log(board, "board");
-  console.log(divCircular, "divCircular");
 
   const spinner = () => {
     // btn.className = "spin";
@@ -84,29 +130,28 @@ function tree(props) {
       btn.disabled = false;
     }, 12000);
   };
-
+  /* 
   const sortData = () => {
     utils.dataSorting(controlledCategories);
     setBoard(controlledCategories.filter((e) => e.category_id === null));
-    /* seteo esta nueva data en controlledCategories solo con los elementos de primer nivel ya que estos contienen a los del subnivel */
   };
 
   const sortFinalData = () => {
     utils.finalDataSorting({ board, controlledCategories });
     setBoardTwo(board);
-  };
+  }; */
 
   useEffect(() => {
     dataFetch();
   }, []);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     sortData();
   }, [controlledCategories]);
 
   useEffect(() => {
     sortFinalData();
-  }, [board]);
+  }, [board]); */
 
   const handleOpen = () => {
     setOpen(true);

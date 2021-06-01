@@ -30,6 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "dev": "yarn start && cd api && yarn start",
     "postinstall": "patch-package"
   },
   "eslintConfig": {
