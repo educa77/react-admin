@@ -1,4 +1,4 @@
-import { fetchUtils } from "react-admin";
+import { EditView, fetchUtils } from "react-admin";
 import { stringify } from "query-string";
 import axios from "axios";
 
@@ -27,26 +27,59 @@ export default {
       pagina = pagina - 1;
       const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
       const { headers, json } = await httpClient(url);
-      console.log(json, "json");
       return {
         data: json?.posts ? json.posts : [],
         total: headers.get("content-range")
           ? parseInt(headers.get("content-range").split("/").pop(), 10)
           : json.totalItems,
       };
+    }
+    if (resource === "users") {
+      const { token } = JSON.parse(localStorage.getItem("auth"));
+      let { page: pagina, perPage: size } = params.pagination;
+      pagina = pagina - 1;
+      const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
+      const data = await axios.get(url, {
+        headers: { "x-access-token": token },
+      });
+      const afueraArray = data.data.Users.pop();
+      const datos = [
+        {
+          id: afueraArray.id,
+          email: afueraArray.email,
+          password: afueraArray.password,
+          role_id: afueraArray.roles.map((e) => e.id),
+          createdAt: afueraArray.createdAt,
+          updatedAt: afueraArray.updatedAt,
+        },
+      ];
+      console.log(datos, "datos");
+      return {
+        data: datos,
+        total: data.data.totalItems,
+      };
+    }
+    if (resource === "roles") {
+      const { token } = JSON.parse(localStorage.getItem("auth"));
+      let { page: pagina, perPage: size } = params.pagination;
+      pagina = pagina - 1;
+      const url = `${apiUrl}/${resource}?page=${pagina}&size=${size}`;
+      const data = await axios.get(url, {
+        headers: { "x-access-token": token },
+      });
+      return {
+        data: data.data.Roles,
+        total: data.data.totalItems,
+      };
     } else {
       const { page, perPage } = params.pagination;
       const { field, order } = params.sort;
-      console.log("estoy aca??????");
       const query = {
         sort: JSON.stringify([field, order]),
         range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
         filter: JSON.stringify(params.filter),
       };
       const url = `${apiUrl}/${resource}?${stringify(query)}`;
-
-      console.log(url, "url");
-
       const { headers, json } = await httpClient(url);
       return {
         data: json.posts,
@@ -72,6 +105,14 @@ export default {
       dataArr.push(json);
       return { data: dataArr };
     }
+    if (resource === "roles") {
+      const id = params.ids[0];
+      const url = `${apiUrl}/${resource}/${id}`;
+      const { json } = await httpClient(url);
+      let dataArr = [];
+      dataArr.push(json);
+      return { data: dataArr };
+    }
     if (resource === "posts") {
       const id = params.ids[0];
       const url = `${apiUrl}/${resource}/${id}`;
@@ -85,6 +126,7 @@ export default {
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
     const { json } = await httpClient(url);
+
     return { data: [...json] };
   },
 
@@ -100,7 +142,6 @@ export default {
       }),
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
-
     return httpClient(url).then(({ headers, json }) => ({
       data: json,
       total: parseInt(headers.get("content-range").split("/").pop(), 10),
@@ -118,6 +159,30 @@ export default {
         console.log(json, "json de update");
         return { data: params.data };
       });
+    }
+    if (resource === "users") {
+      const { token } = JSON.parse(localStorage.getItem("auth"));
+      console.log(params.data, "params.data");
+      return axios
+        .put(`${apiUrl}/${resource}/${params.data.id}`, {
+          headers: { "x-access-token": token },
+          body: params.data,
+        })
+        .then((json) => {
+          console.log(json, "json de update users");
+          const dataJson = json.data;
+          const datos = [
+            {
+              id: dataJson.id,
+              email: dataJson.email,
+              password: dataJson.password,
+              role_id: dataJson.roles.map((e) => e.id),
+              createdAt: dataJson.createdAt,
+              updatedAt: dataJson.updatedAt,
+            },
+          ];
+          return { data: params.data };
+        });
     } else {
       httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PUT",

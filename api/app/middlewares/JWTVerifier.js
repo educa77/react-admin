@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const secret = process.env.JWT_SECRET;
 
 async function JWTVerifier(req, res, next) {
-  console.log(req.headers, "req.headers de jwt");
   const token = req.headers["x-access-token"];
   console.log(token, "token");
   if (!token)

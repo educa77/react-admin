@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
+const db = require(".");
 require("dotenv").config();
 
 module.exports = (sequelize) => {
@@ -20,10 +21,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      roles: {
+      /*       roles: {
         type: DataTypes.VIRTUAL,
         allowNull: true,
-      },
+      }, */
     },
     {
       tableName: "users",
